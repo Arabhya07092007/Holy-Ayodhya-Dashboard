@@ -82,11 +82,26 @@ function PlaceForm() {
       timings: timings,
       wheelchair: wheelchair,
       parking: parking,
-      description: parking,
+      description: description,
       images: images.split("&&"),
       tickets: tickets,
       connectivity: connectivity,
     });
+
+
+    setName('');
+    setAddress('');
+    setRatings('');
+    setReviews('');
+    setDirection('');
+    setTimings('');
+    setWheelchair('');
+    setParking('');
+    setDescription('');
+    setImages([]);
+    setTickets('');
+    setConnectivity('');
+
 
   };
 
