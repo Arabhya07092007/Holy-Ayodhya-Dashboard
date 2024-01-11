@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   TextInput,
@@ -7,17 +7,19 @@ import {
   Text,
   TouchableOpacity,
   ImageBackground,
-  ScrollView
+  ScrollView,
+  Dimensions,
 } from 'react-native';
+import { ref, onValue, push, set } from 'firebase/database';
+import database from './config';
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 class NavBar extends React.Component {
   render() {
     return (
       <View style={styless.navBar}>
-
-
         <Text style={styless.navText}>Holy Ayodhya Dashboard</Text>
-
       </View>
     );
   }
@@ -44,76 +46,257 @@ const styless = StyleSheet.create({
   navText: {
     color: '#ffffff',
     fontSize: 24,
-    fontWeight: "600",
-
+    fontWeight: '600',
   },
 });
 
-class PlaceForm extends React.Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <ImageBackground source={{ uri: "https://shots.so/backgrounds/cosmic/original/5.jpg" }} style={{ width: '100%', height: '100%', justifyContent: "center", alignItems: 'center' }}>
-          <NavBar />
+function PlaceForm() {
+  const [name, setName] = useState('');
+  const [address, setAddress] = useState('');
+  const [ratings, setRatings] = useState('');
+  const [reviews, setReviews] = useState('');
+  const [direction, setDirection] = useState('');
+  const [timings, setTimings] = useState('');
+  const [wheelchair, setWheelchair] = useState('');
+  const [parking, setParking] = useState('');
+  const [description, setDescription] = useState('');
+  const [images, setImages] = useState([]);
+  const [tickets, setTickets] = useState('');
+  const [connectivity, setConnectivity] = useState('');
+  const [category, setCategory] = useState('templgeges');
 
-          <View
-            style={{
-              width: '60%',
-              justifyContent: 'center',
-              padding: 20,
-              backgroundColor: 'white',
-              borderWidth: 1,
-              borderRadius: 10,
-              marginTop: 100
-            }}>
-            <Text>Name:</Text>
-            <TextInput style={styles.input} />
+  const setData = () => {
 
-            <Text>Address:</Text>
-            <TextInput style={styles.input} />
+    console.log(images.split("&&"));
 
-            <Text>Ratings:</Text>
-            <TextInput style={styles.input} keyboardType="numeric" />
 
-            <Text>Stars:</Text>
-            <TextInput style={styles.input} keyboardType="numeric" />
+    const postListRef = ref(database, 'TouristPlaces/' + category + '/');
+    const newPostRef = push(postListRef);
 
-            <Text>Reviews:</Text>
-            <TextInput style={styles.input} multiline />
+    set(newPostRef, {
+      name: name,
+      address: address,
+      ratings: ratings,
+      reviews: reviews,
+      direction: direction,
+      timings: timings,
+      wheelchair: wheelchair,
+      parking: parking,
+      description: parking,
+      images: images.split("&&"),
+      tickets: tickets,
+      connectivity: connectivity,
+    });
 
-            <Text>Distance:</Text>
-            <TextInput style={styles.input} />
+  };
 
-            <Text>Direction:</Text>
-            <TextInput style={styles.input} />
+  const showingData = () => {
+    console.log(category)
+  };
 
-            <Text>Timings:</Text>
-            <TextInput style={styles.input} />
+  return (
+    <View style={styles.container}>
+      <ImageBackground
+        source={{ uri: 'https://shots.so/backgrounds/cosmic/original/5.jpg' }}
+        style={{
+          width: '100%',
+          // height: '100%',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        <NavBar />
 
-            <Text>Wheelchair Availability:</Text>
-            <TextInput style={styles.input} />
+        <ScrollView
+          showsVerticalScrollIndicator={false} // Hide vertical scroll indicator
+          showsHorizontalScrollIndicator={false}
+          style={{
+            width: '55%',
+            // justifyContent: 'center',
+            padding: 20,
+            backgroundColor: 'white',
+            borderWidth: 1,
+            borderRadius: 10,
+            marginTop: 100,
+            marginBottom: 50,
+            height: windowHeight - 150,
+          }}>
+          <View style={{ justifyContent: 'center' }}>
+            <TextInput
+              style={styles.input}
+              placeholder="Name of the Place"
+              placeholderTextColor="#888"
+              value={name}
+              onChangeText={(text) => {
+                setName(text);
+              }}
+            />
 
-            <Text>Parking Availability:</Text>
-            <TextInput style={styles.input} />
+            <TextInput
+              style={styles.input}
+              placeholder="Address"
+              placeholderTextColor="#888"
+              value={address}
+              onChangeText={(text) => {
+                setAddress(text);
+              }}
+            />
 
-            <Text>Description:</Text>
-            <TextInput style={styles.input} multiline />
+            <TextInput
+              style={styles.input}
+              placeholder="Description"
+              placeholderTextColor="#888"
+              value={description}
+              onChangeText={(text) => {
+                setDescription(text);
+              }}
+            />
 
-            <Text>Images:</Text>
-            <TextInput style={styles.input} />
+            <TextInput
+              style={styles.input}
+              placeholder="Google maps location link"
+              placeholderTextColor="#888"
+              value={direction}
+              onChangeText={(text) => {
+                setDirection(text);
+              }}
+            />
 
-            <Text>Tickets Description:</Text>
-            <TextInput style={styles.input} multiline />
+            <TextInput
+              style={styles.input}
+              placeholder="Ratings"
+              placeholderTextColor="#888"
+              value={ratings}
+              onChangeText={(text) => {
+                setRatings(text);
+              }}
+            />
 
-            <Text>Connectivity Description:</Text>
-            <TextInput style={styles.input} multiline />
+            <TextInput
+              style={styles.input}
+              placeholder="Reviews"
+              placeholderTextColor="#888"
+              value={reviews}
+              onChangeText={(text) => {
+                setReviews(text);
+              }}
+            />
 
-            <Button title="Submit" onPress={() => { alert("this is an alert") }} />
+
+            <TextInput
+              style={styles.input}
+              placeholder="Operational Timings"
+              placeholderTextColor="#888"
+              value={timings}
+              onChangeText={(text) => {
+                setTimings(text);
+              }}
+            />
+
+            <TextInput
+              style={styles.input}
+              placeholder="Wheelchair Accessiblility"
+              placeholderTextColor="#888"
+              value={wheelchair}
+              onChangeText={(text) => {
+                setWheelchair(text);
+              }}
+            />
+
+            <TextInput
+              style={styles.input}
+              placeholder="Parking Accessiblility"
+              placeholderTextColor="#888"
+              value={parking}
+              onChangeText={(text) => {
+                setParking(text);
+              }}
+            />
+
+            <TextInput
+              style={styles.input}
+              placeholder="Tickets availability"
+              placeholderTextColor="#888"
+              value={tickets}
+              onChangeText={(text) => {
+                setTickets(text);
+              }}
+            />
+
+            <TextInput
+              style={styles.input}
+              placeholder="Connectivity"
+              placeholderTextColor="#888"
+              value={connectivity}
+              onChangeText={(text) => {
+                setConnectivity(text);
+              }}
+            />
+
+            <TextInput
+              style={styles.input}
+              placeholder="Images Urls"
+              placeholderTextColor="#888"
+              value={images}
+              onChangeText={(text) => {
+                setImages(text);
+              }}
+            />
+
+            <View style={{ flexDirection: 'row', justifyContent: "space-between", marginBottom: 10 }}>
+
+              <TouchableOpacity
+                onPress={() => {
+                  setCategory("temples")
+                }}
+                style={[{
+                  width: 200,
+                  padding: 10,
+                  borderRadius: 10,
+                  alignItems: 'center',
+                }, category == "temples" ? { backgroundColor: "#bc560a" } : { backgroundColor: "#fde58a" }]}>
+                <Text style={[{ fontWeight: "600" }, category == "temples" ? { color: "white" } : { color: "black" }]}>Temples</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => {
+                  setCategory("others")
+                }}
+                style={[{
+                  width: 200,
+                  padding: 10,
+                  borderRadius: 10,
+                  alignItems: 'center',
+                }, category == "others" ? { backgroundColor: "#bc560a" } : { backgroundColor: "#fde58a" }]}>
+                <Text style={[{ fontWeight: "600" }, category == "others" ? { color: "white" } : { color: "black" }]}>Others</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => {
+                  setCategory("food")
+                }}
+                style={[{
+                  width: 200,
+                  padding: 10,
+                  borderRadius: 10,
+                  alignItems: 'center',
+                }, category == "food" ? { backgroundColor: "#bc560a" } : { backgroundColor: "#fde58a" }]}>
+                <Text style={[{ fontWeight: "600" }, category == "food" ? { color: "white" } : { color: "black" }]}>Foods</Text>
+              </TouchableOpacity>
+
+
+            </View>
+
+            <Button
+              title="Submit"
+              onPress={() => {
+                setData();
+              }}
+            />
           </View>
-        </ImageBackground>
-      </View>
-    );
-  }
+        </ScrollView>
+      </ImageBackground>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -121,24 +304,18 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 8,
-    backgroundColor: '#FDFAE7', // light gray background
+    backgroundColor: '#FFFEDE',
     alignItems: 'center',
     margin: 0,
-    padding: 0
+    padding: 0,
+    height: windowHeight,
   },
   input: {
-    height: 40,
-    borderColor: '#6200ee', // purple border
-    borderWidth: 1,
+    borderWidth: 1.2,
+    padding: 10,
+    borderRadius: 10,
+    color: 'black',
     marginBottom: 10,
-    borderRadius: 5, // rounded corners
-    backgroundColor: '#fff', // white background
-    shadowColor: '#000', // shadow
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-    color: '#000', // black text
   },
 });
 
